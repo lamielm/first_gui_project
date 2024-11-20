@@ -73,6 +73,13 @@ class BeverageListWindow:
 
     def _on_search(self, event, values):
         """Handle when user is searching for an item"""
+        search_query = values["-search_id-"]
+        beverage = self.beverage_collection.find_by_id(search_query)
+        if beverage:
+            result_window = BeverageResultsWindow(beverage)
+            result_window.run()
+        else:
+            sg.popup_error("Can not find a beverage with that id.")
 
     def _update_output(self, event, values):  # Leaving event and values here, but you don't need them for this program.
         """Update the contents of the output box"""
@@ -137,3 +144,63 @@ class BeverageAddWindow:
             float(values["-price-"]),
             values["-beverage_active-"] is True,
         )
+
+class BeverageResultsWindow:
+    """Simple Beverage Result"""
+
+    def __init__(self, beverage):
+        """Constructor"""
+
+        active_value = beverage.active
+        inactive_value = not beverage.active
+
+        layout = [
+            [
+            sg.Text("Id", size=(8,1)),
+            sg.Input(key="-id-", default_text=beverage.id, disabled=True),
+            ],
+            [
+            sg.Text("Name", size=(8,1)),
+            sg.Input(key="-name-", default_text=beverage.name, disabled=True),
+            ],
+            [
+            sg.Text("Pack", size=(8,1)),
+            sg.Input(key="-pack-", default_text=beverage.pack, disabled=True),
+            ],
+            [
+            sg.Text("Price", size=(8,1)),
+            sg.Input(key="-price-", default_text=beverage.price, disabled=True),
+            ],
+            [
+            sg.Radio(
+                "Active",
+                "beverage_active_group",
+                key="-beverage_active-",
+                default=active_value,
+            ),
+            ],
+            [
+            sg.Radio(
+                "Inactive",
+                "beverage_active_group",
+                key="-beverage_inactive-",
+                default=inactive_value,
+            ),
+        ], 
+        [sg.Button("Close", key="-close-")],
+        ]
+
+        self.window = sg.Window("Beverage Results", layout)
+
+    def run(self):
+        """Start the window"""
+        self._run_loop()
+        self.window.close()
+
+    def _run_loop(self):
+        """Run the event loop"""
+        while True:
+            event, values = self.window.read()
+            if event == sg.WINDOW_CLOSED or event == "-close-":
+                break
+

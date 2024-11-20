@@ -239,6 +239,7 @@ class UserInterface:
         print(f"Should the Item be {fieldname}? (y/n)")
         self.__display_prompt()
         valid = False
+        value = ""
         while not valid:
             user_input = input()
             if user_input.lower() == "y" or user_input.lower() == "n":

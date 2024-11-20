@@ -7,7 +7,6 @@
 # Internal imports.
 from beverage import BeverageCollection
 from gui_user_interface import BeverageListWindow
-from user_interface import UserInterface
 from utils import CSVProcessor
 
 
